@@ -12,11 +12,16 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'dagger.hilt.android.plugin'
 
 android {
-    compileSdk 31
+    compileSdkVersion 31
+    buildToolsVersion "30.0.3"
+
+    viewBinding {
+        enabled = true
+    }
 
     defaultConfig {
         applicationId "com.example.lukyanovpavel"
-        minSdk 21
+        minSdk 23
         targetSdk 31
         versionCode 1
         versionName "1.0"
@@ -89,7 +94,6 @@ dependencies {
     implementation "androidx.viewpager2:viewpager2:$view_pager_version"
 
     // Timber
-    def timber_version = '5.0.0'
     implementation "com.jakewharton.timber:timber:$timber_version"
 
     // Room
