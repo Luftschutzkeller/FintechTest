@@ -1,24 +1,18 @@
 package com.example.lukyanovpavel.domain.posts
 
-import com.example.lukyanovpavel.domain.common.ObjectStorage
+import com.example.lukyanovpavel.domain.common.PostCounter
 import io.reactivex.Completable
-import io.reactivex.Observable
-import io.reactivex.subjects.BehaviorSubject
 
-object PostsStorage : ObjectStorage<Post> {
-    private val post = BehaviorSubject.create<Post>()
-    private val isFirst = BehaviorSubject.create<Boolean>()
+object Counter : PostCounter {
     private var count = 0
     private var nowPage = 0
+    private var isFirst = true
 
-    override fun updateStorage(value: Post): Completable {
+    override fun update(): Completable {
         return Completable.fromAction {
-            post.onNext(value)
-            isFirst.onNext(count == 0 && nowPage == 0)
+            isFirst = count == 0 && nowPage == 0
         }
     }
-
-    override fun observable(): Observable<Post> = post
 
     override fun countPlus(): Completable = plus()
 
@@ -28,11 +22,7 @@ object PostsStorage : ObjectStorage<Post> {
 
     override fun getNowPage() = nowPage
 
-    override fun isFirstPosition(): Observable<Boolean> = isFirst
-
-    override fun onError(error: Throwable) {
-        post.onError(error)
-    }
+    override fun isFirstPosition(): Boolean = isFirst
 
     private fun plus(): Completable =
         Completable.fromAction {
@@ -52,6 +42,6 @@ object PostsStorage : ObjectStorage<Post> {
             } else {
                 if (count != 0) count--
             }
-            isFirst.onNext(count == 0 && nowPage == 0)
+            isFirst = count == 0 && nowPage == 0
         }
 }

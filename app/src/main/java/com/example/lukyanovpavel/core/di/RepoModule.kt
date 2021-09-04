@@ -25,21 +25,21 @@ object RepoModule {
     // Api
     @Singleton
     @Provides
-    fun provideTopPostsRepository(
+    fun provideTopPostsApiRepository(
         api: PostsService,
         networkMonitor: NetworkMonitor
     ): TopPostsApiRepository = TopPostsApiRepositoryImpl(api, networkMonitor)
 
     @Singleton
     @Provides
-    fun provideHotPostsRepository(
+    fun provideHotPostsApiRepository(
         api: PostsService,
         networkMonitor: NetworkMonitor
     ): HotPostsApiRepository = HotPostsApiRepositoryImpl(api, networkMonitor)
 
     @Singleton
     @Provides
-    fun provideLatestPostsRepository(
+    fun provideLatestPostsApiRepository(
         api: PostsService,
         networkMonitor: NetworkMonitor
     ): LatestPostsApiRepository = LatestPostsApiRepositoryImpl(api, networkMonitor)

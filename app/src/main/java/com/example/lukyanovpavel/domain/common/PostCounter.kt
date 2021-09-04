@@ -3,9 +3,8 @@ package com.example.lukyanovpavel.domain.common
 import io.reactivex.Completable
 import io.reactivex.Observable
 
-interface ObjectStorage<T : Any> {
-    fun updateStorage(value: T): Completable
-    fun observable(): Observable<T>
+interface PostCounter {
+    fun update(): Completable
 
     fun countPlus(): Completable
     fun countMinus(): Completable
@@ -13,7 +12,5 @@ interface ObjectStorage<T : Any> {
     fun getCount(): Int
     fun getNowPage(): Int
 
-    fun isFirstPosition(): Observable<Boolean>
-
-    fun onError(error: Throwable)
+    fun isFirstPosition(): Boolean
 }

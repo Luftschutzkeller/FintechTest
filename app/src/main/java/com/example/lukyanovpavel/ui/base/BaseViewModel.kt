@@ -13,33 +13,27 @@ import timber.log.Timber
 
 open class BaseViewModel<T : Any> : ViewModel() {
     private val dispose: CompositeDisposable = CompositeDisposable()
-    protected val value = BehaviorSubject.create<ResourceState<T>>()
+    protected val value = BehaviorSubject.create<T>()
     protected val isFirstPosition = BehaviorSubject.create<Boolean>()
 
-    protected fun onSetResource(resource: () -> Observable<T>): Completable =
-        Completable.fromAction {
-            try {
-                resource.invoke()
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnError(Timber::e)
-                    .subscribe(
-                        { success ->
-                            value.onNext(ResourceState.Success(success))
-                        },
-                        { error ->
-                            Timber.e(error)
-                            value.onNext(ResourceState.Error(error))
-                        }
-                    )
-                    .untilDestroy()
-            } catch (error: Throwable) {
-                Timber.e(error)
-                value.onNext(ResourceState.Error(error))
-            }
+    open fun onSubscribeViewModel(): Observable<ResourceState<T>> {
+        return Observable.create { emitter ->
+            value
+                .doOnError { error ->
+                    emitter.onNext(ResourceState.Error(error))
+                    Timber.e(error)
+                }
+                .subscribe(
+                    { success ->
+                        emitter.onNext(ResourceState.Success(success))
+                    },
+                    { error ->
+                        emitter.onNext(ResourceState.Error(error))
+                    }
+                )
+                .untilDestroy()
         }
-
-    open fun onSubscribeViewModel(): Observable<ResourceState<T>> = value
+    }
 
     open fun isFirstPosition(): Observable<Boolean> =
         isFirstPosition

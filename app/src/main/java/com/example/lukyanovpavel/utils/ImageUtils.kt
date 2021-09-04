@@ -11,7 +11,6 @@ fun ImageView.load(
     Glide.with(this)
         .asGif()
         .load(url)
-        .placeholder(R.drawable.loading_placeholder)
         .centerCrop()
         .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
         .into(this)

@@ -4,6 +4,7 @@ import com.example.lukyanovpavel.domain.posts.Post
 import com.example.lukyanovpavel.domain.posts.top.TopPostsInteractor
 import com.example.lukyanovpavel.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
@@ -23,7 +24,10 @@ class ViewModelTop @Inject constructor(
     }
 
     fun start() {
-        onSetResource { repo.observPost() }
+        onSetResource()
+            .andThen(repo.start())
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe()
             .untilDestroy()
     }
@@ -43,4 +47,28 @@ class ViewModelTop @Inject constructor(
             .subscribe()
             .untilDestroy()
     }
+
+    private fun onSetResource(): Completable =
+        Completable.fromAction {
+            try {
+                repo.observPost()
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnError(Timber::e)
+                    .subscribe(
+                        { success ->
+                            Timber.tag("ttt").d("onSetResource() - ${success.gifURL}")
+                            value.onNext(success)
+                        },
+                        { error ->
+                            Timber.e(error)
+                            value.onError(error)
+                        }
+                    )
+                    .untilDestroy()
+            } catch (error: Throwable) {
+                Timber.e(error)
+                value.onError(error)
+            }
+        }
 }

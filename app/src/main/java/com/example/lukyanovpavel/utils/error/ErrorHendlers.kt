@@ -8,10 +8,10 @@ import io.reactivex.Single
 fun Single<PostsDto>.handleError(
     isAvailableNetworkState: Boolean
 ): Single<PostsDto> {
-    if (!isAvailableNetworkState) {
+    return if (!isAvailableNetworkState) {
         throw NoInternetConnection(NO_INTERNET_ERROR)
     } else {
-        return this.handleEmptyListError()
+        this.handleEmptyListError()
     }
 }
 

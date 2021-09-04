@@ -1,8 +1,7 @@
-package com.example.lukyanovpavel.ui.posts
+package com.example.lukyanovpavel.ui.posts.latest
 
-import com.example.lukyanovpavel.domain.common.ResourceState
-import com.example.lukyanovpavel.domain.posts.TopPostsInteractor
 import com.example.lukyanovpavel.domain.posts.Post
+import com.example.lukyanovpavel.domain.posts.latest.LatestPostsInteractor
 import com.example.lukyanovpavel.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.Completable
@@ -12,8 +11,8 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class ViewModelPosts3 @Inject constructor(
-    private val repo: TopPostsInteractor
+class ViewModelLatest @Inject constructor(
+    private val repo: LatestPostsInteractor
 ) : BaseViewModel<Post>() {
 
     init {
@@ -24,10 +23,11 @@ class ViewModelPosts3 @Inject constructor(
             .untilDestroy()
     }
 
-    fun start(category: String) {
-        Timber.tag("ttt").d("category - $category")
+    fun start() {
         onSetResource()
-            .andThen(repo.setCategory(category))
+            .andThen(repo.start())
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe()
             .untilDestroy()
     }
@@ -57,17 +57,17 @@ class ViewModelPosts3 @Inject constructor(
                     .doOnError(Timber::e)
                     .subscribe(
                         { success ->
-                            value.onNext(ResourceState.Success(success))
+                            value.onNext(success)
                         },
                         { error ->
                             Timber.e(error)
-                            value.onNext(ResourceState.Error(error))
+                            value.onError(error)
                         }
                     )
                     .untilDestroy()
             } catch (error: Throwable) {
                 Timber.e(error)
-                value.onNext(ResourceState.Error(error))
+                value.onError(error)
             }
         }
 }

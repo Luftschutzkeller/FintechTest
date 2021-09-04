@@ -1,7 +1,5 @@
 package com.example.lukyanovpavel.core.di
 
-import com.example.lukyanovpavel.domain.common.ObjectStorage
-import com.example.lukyanovpavel.domain.posts.Post
 import com.example.lukyanovpavel.domain.posts.hot.HotPostsInteractor
 import com.example.lukyanovpavel.domain.posts.hot.HotPostsInteractorImpl
 import com.example.lukyanovpavel.domain.posts.hot.HotPostsRepository
@@ -22,19 +20,16 @@ object InteractorModule {
 
     @Provides
     fun provideTopPostsInteractor(
-        repo: TopPostsRepository,
-        storage: ObjectStorage<Post>
-    ): TopPostsInteractor = TopPostsInteractorImpl(repo, storage)
+        repo: TopPostsRepository
+    ): TopPostsInteractor = TopPostsInteractorImpl(repo)
 
     @Provides
     fun provideHotPostsInteractor(
-        repo: HotPostsRepository,
-        storage: ObjectStorage<Post>
-    ): HotPostsInteractor = HotPostsInteractorImpl(repo, storage)
+        repo: HotPostsRepository
+    ): HotPostsInteractor = HotPostsInteractorImpl(repo)
 
     @Provides
     fun provideLatestPostsInteractor(
-        repo: LatestPostsRepository,
-        storage: ObjectStorage<Post>
-    ): LatestPostsInteractor = LatestPostsInteractorImpl(repo, storage)
+        repo: LatestPostsRepository
+    ): LatestPostsInteractor = LatestPostsInteractorImpl(repo)
 }

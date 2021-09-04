@@ -11,6 +11,7 @@ import com.example.lukyanovpavel.databinding.LayoutErrorBinding
 import com.example.lukyanovpavel.databinding.LayoutPagerBinding
 import com.example.lukyanovpavel.ui.adapters.ViewPagerAdapter
 import com.example.lukyanovpavel.ui.posts.hot.ScreenHot
+import com.example.lukyanovpavel.ui.posts.latest.ScreenLatest
 import com.example.lukyanovpavel.ui.posts.top.ScreenTop
 import com.example.lukyanovpavel.utils.ZoomOutFadePageTransformer
 import com.google.android.material.tabs.TabLayout

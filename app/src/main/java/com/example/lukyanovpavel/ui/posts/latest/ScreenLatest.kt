@@ -1,10 +1,10 @@
-package com.example.lukyanovpavel.ui.posts.hot
+package com.example.lukyanovpavel.ui.posts.latest
 
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
 import com.example.lukyanovpavel.R
-import com.example.lukyanovpavel.databinding.HotScreenBinding
+import com.example.lukyanovpavel.databinding.ScreenLatestBinding
 import com.example.lukyanovpavel.domain.posts.Post
 import com.example.lukyanovpavel.ui.base.BaseScreen
 import com.example.lukyanovpavel.ui.posts.bind
@@ -15,14 +15,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
-class ScreenHot : BaseScreen<Post, ViewModelHot>(R.layout.hot_screen) {
-    private var _binding: HotScreenBinding? = null
+class ScreenLatest : BaseScreen<Post, ViewModelLatest>(R.layout.screen_top) {
+    private var _binding: ScreenLatestBinding? = null
     private val binding get() = _binding!!
-    private val vm: ViewModelHot by viewModels()
+    private val vm: ViewModelLatest by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        _binding = HotScreenBinding.bind(view)
+        _binding = ScreenLatestBinding.bind(view)
         onSubscribeVewModel(vm)
         vm.start()
         initUi()
