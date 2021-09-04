@@ -11,8 +11,8 @@ import com.jakewharton.rxbinding4.view.clicks
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ScreenLatest : BaseScreen<Post, ViewModelPosts>(R.layout.screen_post) {
-    private val vm: ViewModelPosts by viewModels()
+class ScreenLatest : BaseScreen<Post, ViewModelPosts3>(R.layout.screen_post) {
+    private val vm: ViewModelPosts3 by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

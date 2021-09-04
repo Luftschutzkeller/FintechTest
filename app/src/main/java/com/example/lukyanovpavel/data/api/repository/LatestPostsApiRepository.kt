@@ -8,14 +8,14 @@ import io.reactivex.Single
 import timber.log.Timber
 import javax.inject.Inject
 
-interface PostsApiRepository : (String, Int) -> Single<List<PostDto>>
+interface LatestPostsApiRepository : (Int) -> Single<List<PostDto>>
 
-class PostsApiRepositoryImpl @Inject constructor(
+class LatestPostsApiRepositoryImpl @Inject constructor(
     private val api: PostsService,
     private val networkMonitor: NetworkMonitor,
-) : PostsApiRepository {
-    override fun invoke(category: String, page: Int): Single<List<PostDto>> =
-        api.getPosts(category, page)
+) : LatestPostsApiRepository {
+    override fun invoke(page: Int): Single<List<PostDto>> =
+        api.getLatest(page)
             .handleError(networkMonitor.isNetworkAvailable())
             .map { posts ->
                 posts.result

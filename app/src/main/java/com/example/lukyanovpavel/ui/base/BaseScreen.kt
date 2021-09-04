@@ -2,13 +2,10 @@ package com.example.lukyanovpavel.ui.base
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.example.lukyanovpavel.databinding.ScreenPostBinding
 import com.example.lukyanovpavel.domain.common.ResourceState
 import com.example.lukyanovpavel.ui.posts.bind
-import com.example.lukyanovpavel.utils.Page
-import com.example.lukyanovpavel.utils.Pages
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -26,9 +23,7 @@ abstract class BaseScreen<T : Any, VM : BaseViewModel<T>>(
         _binding = ScreenPostBinding.bind(view)
     }
 
-    protected fun onSubscribeVewModel(vm: VM/*, page: Pages*/) {
-//        vm.onSetCategory(Page.loadPage(page))
-
+    protected fun onSubscribeVewModel(vm: VM) {
         vm.onSubscribeViewModel()
             .doOnError(Timber::e)
             .subscribe(::onStateReceive)

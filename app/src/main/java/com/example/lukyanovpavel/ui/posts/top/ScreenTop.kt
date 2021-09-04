@@ -1,4 +1,4 @@
-package com.example.lukyanovpavel.ui.posts
+package com.example.lukyanovpavel.ui.posts.top
 
 import android.os.Bundle
 import android.view.View
@@ -11,13 +11,13 @@ import com.jakewharton.rxbinding4.view.clicks
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ScreenTop : BaseScreen<Post, ViewModelPosts>(R.layout.screen_post) {
-    private val vm: ViewModelPosts by viewModels()
+class ScreenTop : BaseScreen<Post, ViewModelTop>(R.layout.screen_post) {
+    private val vm: ViewModelTop by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         onSubscribeVewModel(vm)
-        vm.start("top")
+        vm.start()
         initUi()
     }
 

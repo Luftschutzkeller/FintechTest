@@ -7,7 +7,6 @@ import io.reactivex.subjects.BehaviorSubject
 
 object PostsStorage : ObjectStorage<Post> {
     private val post = BehaviorSubject.create<Post>()
-    private val category = BehaviorSubject.create<String>()
     private val isFirst = BehaviorSubject.create<Boolean>()
     private var count = 0
     private var nowPage = 0
@@ -28,22 +27,6 @@ object PostsStorage : ObjectStorage<Post> {
     override fun getCount() = count
 
     override fun getNowPage() = nowPage
-
-    override fun updateCategory(category: String): Completable =
-        Completable.fromAction {
-            if (!this.category.hasValue()) {
-                this.category.onNext(category)
-            } else {
-                if (category != this.category.value) {
-                    count = 0
-                    nowPage = 0
-                    this.category.onNext(category)
-                }
-            }
-            isFirst.onNext(count == 0 && nowPage == 0)
-        }
-
-    override fun observCategory(): Observable<String> = category
 
     override fun isFirstPosition(): Observable<Boolean> = isFirst
 

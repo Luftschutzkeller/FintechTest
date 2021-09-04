@@ -1,4 +1,4 @@
-package com.example.lukyanovpavel.ui.posts
+package com.example.lukyanovpavel.ui.posts.hot
 
 import android.os.Bundle
 import android.view.View
@@ -11,13 +11,13 @@ import com.jakewharton.rxbinding4.view.clicks
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ScreenHot : BaseScreen<Post, ViewModelPosts>(R.layout.screen_post) {
-    private val vm: ViewModelPosts by viewModels()
+class ScreenHot : BaseScreen<Post, ViewModelHot>(R.layout.screen_post) {
+    private val vm: ViewModelHot by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         onSubscribeVewModel(vm)
-        vm.start("hot")
+        vm.start()
         initUi()
     }
 

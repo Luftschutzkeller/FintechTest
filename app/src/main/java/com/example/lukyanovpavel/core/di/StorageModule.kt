@@ -13,6 +13,5 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object StorageModule {
     @Provides
-    @Singleton
     fun providePostsStorage(): ObjectStorage<Post> = PostsStorage
 }

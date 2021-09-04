@@ -1,7 +1,7 @@
 package com.example.lukyanovpavel.ui.posts
 
 import com.example.lukyanovpavel.domain.common.ResourceState
-import com.example.lukyanovpavel.domain.posts.LoadPostsInteractor
+import com.example.lukyanovpavel.domain.posts.TopPostsInteractor
 import com.example.lukyanovpavel.domain.posts.Post
 import com.example.lukyanovpavel.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,8 +12,8 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class ViewModelPosts @Inject constructor(
-    private val repo: LoadPostsInteractor
+class ViewModelPosts3 @Inject constructor(
+    private val repo: TopPostsInteractor
 ) : BaseViewModel<Post>() {
 
     init {

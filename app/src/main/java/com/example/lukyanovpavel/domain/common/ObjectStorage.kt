@@ -13,9 +13,6 @@ interface ObjectStorage<T : Any> {
     fun getCount(): Int
     fun getNowPage(): Int
 
-    fun updateCategory(category: String): Completable
-    fun observCategory(): Observable<String>
-
     fun isFirstPosition(): Observable<Boolean>
 
     fun onError(error: Throwable)
