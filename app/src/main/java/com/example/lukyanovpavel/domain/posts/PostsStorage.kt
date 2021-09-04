@@ -47,6 +47,10 @@ object PostsStorage : ObjectStorage<Post> {
 
     override fun isFirstPosition(): Observable<Boolean> = isFirst
 
+    override fun onError(error: Throwable) {
+        post.onError(error)
+    }
+
     private fun plus(): Completable =
         Completable.fromAction {
             if (count == 4) {

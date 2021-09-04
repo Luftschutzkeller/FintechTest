@@ -17,4 +17,6 @@ interface ObjectStorage<T : Any> {
     fun observCategory(): Observable<String>
 
     fun isFirstPosition(): Observable<Boolean>
+
+    fun onError(error: Throwable)
 }

@@ -60,4 +60,5 @@ class LoadPostsInteractorImpl @Inject constructor(
 
     private fun loadNewPostsInNetwork(category: String, page: Int): Completable =
         repo.loadPosts(category, page)
+            .doOnError(storage::onError)
 }

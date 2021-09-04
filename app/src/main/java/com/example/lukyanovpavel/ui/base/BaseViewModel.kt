@@ -10,32 +10,16 @@ import timber.log.Timber
 
 open class BaseViewModel<T : Any> : ViewModel() {
     private val dispose: CompositeDisposable = CompositeDisposable()
-    protected val value = BehaviorSubject.create<T>()
+    protected val value = BehaviorSubject.create<ResourceState<T>>()
     protected val isFirstPosition = BehaviorSubject.create<Boolean>()
     protected val category = BehaviorSubject.create<String>()
 
     open fun onSetCategory(category: String) {
+//        Timber.tag("ttt").d("category - $category")
         this.category.onNext(category)
     }
 
-    open fun onSubscribeViewModel(): Observable<ResourceState<T>> {
-        return Observable.create { emitter ->
-            value
-                .doOnError { error ->
-                    emitter.onNext(ResourceState.Error(error))
-                    Timber.e(error)
-                }
-                .subscribe(
-                    { success ->
-                        emitter.onNext(ResourceState.Success(success))
-                    },
-                    { error ->
-                        emitter.onNext(ResourceState.Error(error))
-                    }
-                )
-                .untilDestroy()
-        }
-    }
+    open fun onSubscribeViewModel(): Observable<ResourceState<T>> = value
 
     open fun isFirstPosition(): Observable<Boolean> =
         isFirstPosition

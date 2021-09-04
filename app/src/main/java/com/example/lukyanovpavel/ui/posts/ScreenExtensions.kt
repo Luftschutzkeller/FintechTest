@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.widget.ViewPager2
 import com.example.lukyanovpavel.R
+import com.example.lukyanovpavel.databinding.LayoutErrorBinding
 import com.example.lukyanovpavel.databinding.LayoutPagerBinding
 import com.example.lukyanovpavel.ui.adapters.ViewPagerAdapter
 import com.example.lukyanovpavel.utils.ZoomOutFadePageTransformer
@@ -98,4 +99,10 @@ fun LayoutPagerBinding.bind(
     pager.bind(
         tabLayout, context, layoutInflater, childFragmentManager, lifecycle
     )
+}
+
+fun LayoutErrorBinding.bind(
+    error: Throwable?
+) {
+    errorText.text = error?.localizedMessage
 }

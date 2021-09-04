@@ -6,7 +6,6 @@ import androidx.fragment.app.viewModels
 import com.example.lukyanovpavel.R
 import com.example.lukyanovpavel.domain.posts.Post
 import com.example.lukyanovpavel.ui.base.BaseScreen
-import com.example.lukyanovpavel.utils.Pages.TOP
 import com.example.lukyanovpavel.utils.load
 import com.jakewharton.rxbinding4.view.clicks
 import dagger.hilt.android.AndroidEntryPoint
@@ -17,17 +16,13 @@ class ScreenTop : BaseScreen<Post, ViewModelPosts>(R.layout.screen_post) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        onSubscribeVewModel(vm, TOP)
-        vm.start()
+        onSubscribeVewModel(vm)
+        vm.start("top")
         initUi()
     }
 
     override fun handleSuccessState(data: Post) {
-        super.handleSuccessState(data)
-        binding.postImage.load(
-            data.gifURL,
-            animPlaceholder
-        )
+        binding.postImage.load(data.gifURL)
     }
 
     private fun initUi() {

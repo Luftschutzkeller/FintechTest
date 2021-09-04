@@ -1,13 +1,12 @@
 package com.example.lukyanovpavel.ui.base
 
-import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import com.example.lukyanovpavel.R
 import com.example.lukyanovpavel.databinding.ScreenPostBinding
 import com.example.lukyanovpavel.domain.common.ResourceState
+import com.example.lukyanovpavel.ui.posts.bind
 import com.example.lukyanovpavel.utils.Page
 import com.example.lukyanovpavel.utils.Pages
 import io.reactivex.Observable
@@ -21,19 +20,14 @@ abstract class BaseScreen<T : Any, VM : BaseViewModel<T>>(
     private var _binding: ScreenPostBinding? = null
     protected val binding get() = _binding!!
     private val dispose = CompositeDisposable()
-    protected val animPlaceholder: AnimationDrawable =
-        AppCompatResources.getDrawable(
-            requireContext(),
-            R.drawable.loading_placeholder
-        ) as AnimationDrawable
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = ScreenPostBinding.bind(view)
     }
 
-    protected fun onSubscribeVewModel(vm: VM, page: Pages) {
-        vm.onSetCategory(Page.loadPage(page))
+    protected fun onSubscribeVewModel(vm: VM/*, page: Pages*/) {
+//        vm.onSetCategory(Page.loadPage(page))
 
         vm.onSubscribeViewModel()
             .doOnError(Timber::e)
@@ -50,12 +44,12 @@ abstract class BaseScreen<T : Any, VM : BaseViewModel<T>>(
         }
     }
 
-    open fun handleSuccessState(data: T) {
-        animPlaceholder.start()
-    }
+    open fun handleSuccessState(data: T) {}
 
     open fun handleErrorState(error: Throwable?) {
-        // переопределить и показывать нужный экран
+        Timber.tag("ttt").d("handleErrorState - ${error?.message}")
+        binding.errorLayout.root.visibility = View.VISIBLE
+        binding.errorLayout.bind(error)
     }
 
     private fun subscribeFirstPostState(state: Observable<Boolean>) {

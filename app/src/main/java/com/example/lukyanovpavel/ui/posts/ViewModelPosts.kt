@@ -1,5 +1,6 @@
 package com.example.lukyanovpavel.ui.posts
 
+import com.example.lukyanovpavel.domain.common.ResourceState
 import com.example.lukyanovpavel.domain.posts.LoadPostsInteractor
 import com.example.lukyanovpavel.domain.posts.Post
 import com.example.lukyanovpavel.ui.base.BaseViewModel
@@ -23,12 +24,10 @@ class ViewModelPosts @Inject constructor(
             .untilDestroy()
     }
 
-    fun start() {
-        category
-            .flatMapCompletable {
-                onSetResource()
-                    .andThen(repo.setCategory(it))
-            }
+    fun start(category: String) {
+        Timber.tag("ttt").d("category - $category")
+        onSetResource()
+            .andThen(repo.setCategory(category))
             .subscribe()
             .untilDestroy()
     }
@@ -58,17 +57,17 @@ class ViewModelPosts @Inject constructor(
                     .doOnError(Timber::e)
                     .subscribe(
                         { success ->
-                            value.onNext(success)
+                            value.onNext(ResourceState.Success(success))
                         },
                         { error ->
                             Timber.e(error)
-                            value.onError(error)
+                            value.onNext(ResourceState.Error(error))
                         }
                     )
                     .untilDestroy()
             } catch (error: Throwable) {
                 Timber.e(error)
-                value.onError(error)
+                value.onNext(ResourceState.Error(error))
             }
         }
 }

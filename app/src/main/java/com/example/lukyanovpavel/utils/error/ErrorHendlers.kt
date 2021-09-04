@@ -25,6 +25,7 @@ private fun Single<PostsDto>.handleEmptyListError(): Single<PostsDto> {
 }
 
 object ErrorMessages {
-    const val EMPTY_RESPONSE_ERROR = "Нет данных"
-    const val NO_INTERNET_ERROR = "Отсутствует подключение к сети!"
+    const val EMPTY_RESPONSE_ERROR = "Нет данных. Выберите другую категорию."
+    const val NO_INTERNET_ERROR =
+        "Произошла ошибка при загрузке данных. Проверьте подключение к сети."
 }
