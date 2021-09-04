@@ -1,0 +1,81 @@
+package com.example.lukyanovpavel.ui.base
+
+import android.graphics.drawable.AnimationDrawable
+import android.os.Bundle
+import android.view.View
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.fragment.app.Fragment
+import com.example.lukyanovpavel.R
+import com.example.lukyanovpavel.databinding.ScreenPostBinding
+import com.example.lukyanovpavel.domain.common.ResourceState
+import com.example.lukyanovpavel.utils.Page
+import com.example.lukyanovpavel.utils.Pages
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
+import timber.log.Timber
+
+abstract class BaseScreen<T : Any, VM : BaseViewModel<T>>(
+    resourceId: Int
+) : Fragment(resourceId) {
+    private var _binding: ScreenPostBinding? = null
+    protected val binding get() = _binding!!
+    private val dispose = CompositeDisposable()
+    protected val animPlaceholder: AnimationDrawable =
+        AppCompatResources.getDrawable(
+            requireContext(),
+            R.drawable.loading_placeholder
+        ) as AnimationDrawable
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        _binding = ScreenPostBinding.bind(view)
+    }
+
+    protected fun onSubscribeVewModel(vm: VM, page: Pages) {
+        vm.onSetCategory(Page.loadPage(page))
+
+        vm.onSubscribeViewModel()
+            .doOnError(Timber::e)
+            .subscribe(::onStateReceive)
+            .untilDestroy()
+
+        subscribeFirstPostState(vm.isFirstPosition())
+    }
+
+    private fun onStateReceive(resourceState: ResourceState<T>) {
+        when (resourceState) {
+            is ResourceState.Success -> handleSuccessState(resourceState.data)
+            is ResourceState.Error -> handleErrorState(resourceState.error)
+        }
+    }
+
+    open fun handleSuccessState(data: T) {
+        animPlaceholder.start()
+    }
+
+    open fun handleErrorState(error: Throwable?) {
+        // переопределить и показывать нужный экран
+    }
+
+    private fun subscribeFirstPostState(state: Observable<Boolean>) {
+        state
+            .doOnError(Timber::e)
+            .subscribe(::handleFirstPositionState)
+            .untilDestroy()
+    }
+
+    open fun handleFirstPositionState(state: Boolean) {
+        binding.back.isClickable = !state
+    }
+
+    private fun Disposable.untilDestroy() {
+        dispose.add(this)
+    }
+
+    override fun onDestroy() {
+        dispose.clear()
+        _binding = null
+        super.onDestroy()
+    }
+}
