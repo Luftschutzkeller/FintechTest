@@ -61,12 +61,8 @@ open class BaseScreen<T : Any, VM : BaseViewModel<T>>(
 
     open fun handleLoadingState(state: Boolean) {
         with(binding) {
-            with(postLayout) {
-                next.isClickable = !state
-                back.isClickable = !state
-                progressBar.isVisible = state
-                postContainerP.isVisible = !state
-            }
+            postLayout.root.isVisible = !state
+            progressBar.isVisible = state
         }
     }
 

@@ -3,7 +3,7 @@ package com.example.lukyanovpavel.utils
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import timber.log.Timber
+import com.example.lukyanovpavel.R
 
 fun ImageView.load(
     url: Any?
@@ -12,6 +12,7 @@ fun ImageView.load(
         .asGif()
         .load(url)
         .centerCrop()
+        .placeholder(R.drawable.ic_placeholder)
         .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
         .into(this)
 }
