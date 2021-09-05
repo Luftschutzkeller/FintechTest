@@ -30,6 +30,8 @@ class ScreenTop : BaseScreen<Post, ViewModelTop>(R.layout.screen_post) {
     override fun handleSuccessState(data: Post) {
         super.handleSuccessState(data)
         Timber.tag("ttt").d("handleSuccessState Top - ${data.gifURL}")
+        binding.postLayout.root.visibility = View.VISIBLE
+        binding.errorLayout.root.visibility = View.INVISIBLE
         binding.postLayout.bind(data)
     }
 

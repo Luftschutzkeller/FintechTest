@@ -19,6 +19,7 @@ import com.example.lukyanovpavel.utils.ZoomOutFadePageTransformer
 import com.example.lukyanovpavel.utils.load
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import timber.log.Timber
 
 fun ViewPager2.bind(
     tabLayout: TabLayout,
@@ -116,6 +117,7 @@ fun LayoutErrorBinding.bind(
 fun LayoutPostBinding.bind(
     post: Post
 ) {
+    Timber.tag("ttt").d("Layout bind - gif: ${post.gifURL} des: ${post.description}")
     postImage.load(post.gifURL)
     postDescription.text = post.description
 }
