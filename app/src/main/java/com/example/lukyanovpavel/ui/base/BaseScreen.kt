@@ -14,7 +14,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import timber.log.Timber
 
-open class BaseScreen<T : Any, VM : BaseViewModel<T>>(
+abstract class BaseScreen<T : Any, VM : BaseViewModel<T>>(
     resourceId: Int
 ) : Fragment(resourceId) {
     private var _binding: ScreenPostBinding? = null
@@ -80,7 +80,7 @@ open class BaseScreen<T : Any, VM : BaseViewModel<T>>(
         }
     }
 
-    open fun repeat() {}
+    abstract fun repeat()
 
     private fun subscribeFirstPostState(state: Observable<Boolean>) {
         state

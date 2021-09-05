@@ -30,7 +30,6 @@ class ViewModelTop @Inject constructor(
     }
 
     override fun next() {
-        super.next()
         repo.loadNext()
             .doOnError(Timber::e)
             .subscribe()
@@ -38,7 +37,6 @@ class ViewModelTop @Inject constructor(
     }
 
     override fun previous() {
-        super.previous()
         repo.loadPrevious()
             .doOnError(Timber::e)
             .subscribe()

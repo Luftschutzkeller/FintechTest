@@ -11,7 +11,7 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import timber.log.Timber
 
-open class BaseViewModel<T : Any> : ViewModel() {
+abstract class BaseViewModel<T : Any> : ViewModel() {
     private val dispose: CompositeDisposable = CompositeDisposable()
     private val value = BehaviorSubject.create<T>()
     protected val isFirstPosition = BehaviorSubject.create<Boolean>()
@@ -62,9 +62,9 @@ open class BaseViewModel<T : Any> : ViewModel() {
     open fun isFirstPosition(): Observable<Boolean> =
         isFirstPosition
 
-    open fun next() {}
+    abstract fun next()
 
-    open fun previous() {}
+    abstract fun previous()
 
     protected fun Disposable.untilDestroy() {
         dispose.add(this)
