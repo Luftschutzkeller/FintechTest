@@ -9,11 +9,14 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.lukyanovpavel.R
 import com.example.lukyanovpavel.databinding.LayoutErrorBinding
 import com.example.lukyanovpavel.databinding.LayoutPagerBinding
+import com.example.lukyanovpavel.databinding.LayoutPostBinding
+import com.example.lukyanovpavel.domain.posts.Post
 import com.example.lukyanovpavel.ui.adapters.ViewPagerAdapter
 import com.example.lukyanovpavel.ui.posts.hot.ScreenHot
 import com.example.lukyanovpavel.ui.posts.latest.ScreenLatest
 import com.example.lukyanovpavel.ui.posts.top.ScreenTop
 import com.example.lukyanovpavel.utils.ZoomOutFadePageTransformer
+import com.example.lukyanovpavel.utils.load
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -108,4 +111,11 @@ fun LayoutErrorBinding.bind(
     error: Throwable?
 ) {
     errorText.text = error?.localizedMessage
+}
+
+fun LayoutPostBinding.bind(
+    post: Post
+) {
+    postImage.load(post.gifURL)
+    postDescription.text = post.description
 }
