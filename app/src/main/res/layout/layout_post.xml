@@ -8,7 +8,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/post_container_p"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="350dp"
         android:layout_margin="8dp"
         app:cardCornerRadius="10dp"
         app:layout_constraintBottom_toTopOf="@id/back"
