@@ -15,7 +15,7 @@ class App : Application() {
     }
 
     private fun initLogger() {
-        if (BuildConfig.DEBAG) {
+        if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
         RxJavaPlugins.setErrorHandler(Timber::e)

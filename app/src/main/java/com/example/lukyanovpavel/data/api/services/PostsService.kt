@@ -6,9 +6,18 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface PostsService {
-    @GET("{page}/{number}?json=true")
-    fun getPosts(
-        @Path("page") page: String,
-        @Path("number") number: Int,
+    @GET("top/{number}?json=true")
+    fun getTop(
+        @Path("number") number: Int
+    ): Single<PostsDto>
+
+    @GET("hot/{number}?json=true")
+    fun getHot(
+        @Path("number") number: Int
+    ): Single<PostsDto>
+
+    @GET("latest/{number}?json=true")
+    fun getLatest(
+        @Path("number") number: Int
     ): Single<PostsDto>
 }

@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">LukyanovPavel</string>
+    <string name="app_title">Developers Life</string>
+    <string name="category_top">Лучшее</string>
+    <string name="category_latest">Последнее</string>
+    <string name="category_hot">Горячее</string>
+    <string name="repeat">ПОВТОРИТЬ</string>
 </resources>

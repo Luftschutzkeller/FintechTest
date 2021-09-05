@@ -12,8 +12,8 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'dagger.hilt.android.plugin'
 
 android {
-    compileSdkVersion 31
-    buildToolsVersion "30.0.3"
+    compileSdkVersion 30
+    buildToolsVersion "30.0.2"
 
     viewBinding {
         enabled = true
@@ -22,7 +22,7 @@ android {
     defaultConfig {
         applicationId "com.example.lukyanovpavel"
         minSdk 23
-        targetSdk 31
+        targetSdk 30
         versionCode 1
         versionName "1.0"
 
