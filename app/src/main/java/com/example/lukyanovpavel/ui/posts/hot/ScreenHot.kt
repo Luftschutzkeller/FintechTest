@@ -29,13 +29,11 @@ class ScreenHot : BaseScreen<Post, ViewModelHot>(R.layout.screen_post) {
 
     override fun handleSuccessState(data: Post) {
         super.handleSuccessState(data)
-        Timber.tag("ttt").d("handleSuccessState Hot - ${data.gifURL}")
         binding.postLayout.bind(data)
     }
 
     override fun handleErrorState(error: Throwable?) {
         super.handleErrorState(error)
-        Timber.tag("ttt").d("handleErrorState Hot - ${error?.message}")
         with(binding) {
             errorLayout.root.visibility = View.VISIBLE
             errorLayout.bind(error)
