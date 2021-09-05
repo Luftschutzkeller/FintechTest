@@ -2,12 +2,10 @@ package com.example.lukyanovpavel.ui.base
 
 import androidx.lifecycle.ViewModel
 import com.example.lukyanovpavel.domain.common.ResourceState
-import io.reactivex.Completable
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import timber.log.Timber
 
@@ -23,6 +21,7 @@ open class BaseViewModel<T : Any> : ViewModel() {
                     emitter.onNext(ResourceState.Error(error))
                     Timber.e(error)
                 }
+                .doOnComplete { emitter.onNext(ResourceState.Loading) }
                 .subscribe(
                     { success ->
                         emitter.onNext(ResourceState.Success(success))
@@ -37,12 +36,6 @@ open class BaseViewModel<T : Any> : ViewModel() {
 
     open fun isFirstPosition(): Observable<Boolean> =
         isFirstPosition
-            .doOnError(Timber::e)
-            .flatMap { state ->
-                Observable.create { emitter ->
-                    emitter.onNext(state)
-                }
-            }
 
     protected fun Disposable.untilDestroy() {
         dispose.add(this)

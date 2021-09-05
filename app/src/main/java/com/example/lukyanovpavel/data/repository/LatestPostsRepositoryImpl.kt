@@ -16,7 +16,7 @@ class LatestPostsRepositoryImpl @Inject constructor(
     private val db: PostsDatabaseRepository
 ) : LatestPostsRepository {
 
-    override fun load(page: Int): Completable =
+    private fun load(page: Int): Completable =
         latestApi.invoke(page)
             .flatMapCompletable { posts ->
                 db.insertPost(LATEST, posts, page)
@@ -24,10 +24,18 @@ class LatestPostsRepositoryImpl @Inject constructor(
             .doOnError(Timber::e)
             .subscribeOn(Schedulers.io())
 
-    override fun getPost(page: Int, count: Int): Single<List<Post>> =
+    override fun getPost(page: Int, count: Int): Single<Post> =
         db.getPost(LATEST, page, count)
-            .map { listPostsEntity ->
-                listPostsEntity.map { it.toDomain() }
+            .flatMap { listPostsEntity ->
+                if (listPostsEntity.isEmpty()) {
+                    load(page)
+                        .andThen(
+                            db.getPost(LATEST, page, count)
+                                .flatMap { Single.just(it.first().toDomain()) }
+                        )
+                } else {
+                    Single.just(listPostsEntity.first().toDomain())
+                }
             }
 
     companion object {

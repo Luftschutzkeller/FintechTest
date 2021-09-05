@@ -26,15 +26,12 @@ class ViewModelTop @Inject constructor(
     fun start() {
         onSetResource()
             .andThen(repo.start())
-            .subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribe()
             .untilDestroy()
     }
 
     fun nextPost() {
         repo.loadNext()
-            .subscribeOn(Schedulers.newThread())
             .doOnError(Timber::e)
             .subscribe()
             .untilDestroy()
@@ -42,7 +39,6 @@ class ViewModelTop @Inject constructor(
 
     fun previousPost() {
         repo.loadPrevious()
-            .subscribeOn(Schedulers.newThread())
             .doOnError(Timber::e)
             .subscribe()
             .untilDestroy()
@@ -57,7 +53,6 @@ class ViewModelTop @Inject constructor(
                     .doOnError(Timber::e)
                     .subscribe(
                         { success ->
-                            Timber.tag("ttt").d("onSetResource() - ${success.gifURL}")
                             value.onNext(success)
                         },
                         { error ->

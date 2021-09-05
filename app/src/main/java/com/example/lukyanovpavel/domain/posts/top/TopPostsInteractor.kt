@@ -1,11 +1,10 @@
 package com.example.lukyanovpavel.domain.posts.top
 
-import com.example.lukyanovpavel.domain.posts.Counter
 import com.example.lukyanovpavel.domain.posts.Post
+import com.example.lukyanovpavel.domain.posts.PostCounter
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
-import timber.log.Timber
 import javax.inject.Inject
 
 interface TopPostsInteractor {
@@ -20,59 +19,34 @@ class TopPostsInteractorImpl @Inject constructor(
     private val repo: TopPostsRepository
 ) : TopPostsInteractor {
     private val postStorage = BehaviorSubject.create<Post>()
-    private val isFirst = BehaviorSubject.create<Boolean>()
-    private val storage = Counter
+    private val counter = PostCounter
 
-    init {
-        isFirst.onNext(storage.isFirstPosition())
-    }
-
-    override fun observPost(): Observable<Post> {
-        return postStorage
-            .map {
-                Timber.tag("ttt").d("observPost() - ${it.gifURL}")
-                it
-            }
-    }
+    override fun observPost(): Observable<Post> = postStorage
 
     override fun start(): Completable =
         updateData()
 
     override fun loadNext(): Completable =
-        storage.countPlus()
+        counter.countPlus()
             .andThen(updateData())
 
     override fun loadPrevious(): Completable =
-        storage.countMinus()
+        counter.countMinus()
             .andThen(updateData())
 
-    override fun isFirstPosition(): Observable<Boolean> = isFirst
+    override fun isFirstPosition(): Observable<Boolean> = counter.isFirstPosition()
 
     private fun updateData(): Completable =
-        with(storage) {
+        with(counter) {
             repo.getPost(getNowPage(), getCount())
                 .flatMapCompletable { post ->
-                    if (post.isNotEmpty()) {
-                        updatePostStorage(post.first())
-                    } else {
-                        loadNewPostsInNetwork(getNowPage())
-                            .andThen(
-                                repo.getPost(getNowPage(), getCount())
-                                    .flatMapCompletable { newPost ->
-                                        updatePostStorage(newPost.first())
-                                    }
-                            )
-                    }
+                    updatePostStorage(post)
                 }
+                .doOnError(postStorage::onError)
         }
 
     private fun updatePostStorage(post: Post): Completable =
         Completable.fromAction {
             postStorage.onNext(post)
-            storage.update()
         }
-
-    private fun loadNewPostsInNetwork(page: Int): Completable =
-        repo.load(page)
-            .doOnError(postStorage::onError)
 }

@@ -117,7 +117,6 @@ fun LayoutErrorBinding.bind(
 fun LayoutPostBinding.bind(
     post: Post
 ) {
-    Timber.tag("ttt").d("Layout bind - gif: ${post.gifURL} des: ${post.description}")
     postImage.load(post.gifURL)
     postDescription.text = post.description
 }

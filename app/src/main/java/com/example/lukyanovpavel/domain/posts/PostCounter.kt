@@ -1,18 +1,14 @@
 package com.example.lukyanovpavel.domain.posts
 
-import com.example.lukyanovpavel.domain.common.PostCounter
+import com.example.lukyanovpavel.domain.common.Counter
 import io.reactivex.Completable
+import io.reactivex.Observable
+import io.reactivex.subjects.BehaviorSubject
 
-object Counter : PostCounter {
+object PostCounter : Counter {
     private var count = 0
     private var nowPage = 0
-    private var isFirst = true
-
-    override fun update(): Completable {
-        return Completable.fromAction {
-            isFirst = count == 0 && nowPage == 0
-        }
-    }
+    private var isFirst = BehaviorSubject.create<Boolean>()
 
     override fun countPlus(): Completable = plus()
 
@@ -22,7 +18,7 @@ object Counter : PostCounter {
 
     override fun getNowPage() = nowPage
 
-    override fun isFirstPosition(): Boolean = isFirst
+    override fun isFirstPosition(): Observable<Boolean> = isFirst
 
     private fun plus(): Completable =
         Completable.fromAction {
@@ -42,6 +38,6 @@ object Counter : PostCounter {
             } else {
                 if (count != 0) count--
             }
-            isFirst = count == 0 && nowPage == 0
+            isFirst.onNext(count == 0 && nowPage == 0)
         }
 }

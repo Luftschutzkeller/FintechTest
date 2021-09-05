@@ -25,15 +25,18 @@ abstract class BaseScreen<T : Any, VM : BaseViewModel<T>>(
         when (resourceState) {
             is ResourceState.Success -> handleSuccessState(resourceState.data)
             is ResourceState.Error -> handleErrorState(resourceState.error)
+            is ResourceState.Loading -> handleLoadingState(true)
         }
     }
 
     open fun handleSuccessState(data: T) {
-        Timber.tag("ttt").d("handleSuccessStateBase - $data")
+        handleLoadingState(false)
     }
 
+    open fun handleLoadingState(state: Boolean) {}
+
     open fun handleErrorState(error: Throwable?) {
-        Timber.tag("ttt").d("handleErrorState - ${error?.message}")
+        handleLoadingState(false)
     }
 
     private fun subscribeFirstPostState(state: Observable<Boolean>) {

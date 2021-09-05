@@ -5,10 +5,8 @@ import io.reactivex.Completable
 import io.reactivex.Single
 
 interface TopPostsRepository {
-    fun load(page: Int): Completable
-
     fun getPost(
         page: Int,
         count: Int
-    ): Single<List<Post>>
+    ): Single<Post>
 }

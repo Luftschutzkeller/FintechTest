@@ -2,6 +2,7 @@ package com.example.lukyanovpavel.ui.posts.top
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import com.example.lukyanovpavel.R
 import com.example.lukyanovpavel.databinding.ScreenPostBinding
@@ -11,7 +12,6 @@ import com.example.lukyanovpavel.ui.posts.bind
 import com.example.lukyanovpavel.utils.error.NoInternetConnection
 import com.jakewharton.rxbinding4.view.clicks
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class ScreenTop : BaseScreen<Post, ViewModelTop>(R.layout.screen_post) {
@@ -29,15 +29,23 @@ class ScreenTop : BaseScreen<Post, ViewModelTop>(R.layout.screen_post) {
 
     override fun handleSuccessState(data: Post) {
         super.handleSuccessState(data)
-        Timber.tag("ttt").d("handleSuccessState Top - ${data.gifURL}")
-        binding.postLayout.root.visibility = View.VISIBLE
-        binding.errorLayout.root.visibility = View.INVISIBLE
         binding.postLayout.bind(data)
+    }
+
+    override fun handleLoadingState(state: Boolean) {
+        super.handleLoadingState(state)
+        with(binding) {
+            with(postLayout) {
+                next.isClickable = !state
+                back.isClickable = !state
+                progressBar.isVisible = state
+                postContainerP.isVisible = !state
+            }
+        }
     }
 
     override fun handleErrorState(error: Throwable?) {
         super.handleErrorState(error)
-        Timber.tag("ttt").d("handleErrorState Top - ${error?.message}")
         with(binding) {
             errorLayout.root.visibility = View.VISIBLE
             errorLayout.bind(error)

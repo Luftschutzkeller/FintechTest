@@ -3,14 +3,12 @@ package com.example.lukyanovpavel.domain.common
 import io.reactivex.Completable
 import io.reactivex.Observable
 
-interface PostCounter {
-    fun update(): Completable
-
+interface Counter {
     fun countPlus(): Completable
     fun countMinus(): Completable
 
     fun getCount(): Int
     fun getNowPage(): Int
 
-    fun isFirstPosition(): Boolean
+    fun isFirstPosition(): Observable<Boolean>
 }
