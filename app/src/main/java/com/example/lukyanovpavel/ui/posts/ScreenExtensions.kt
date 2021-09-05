@@ -2,6 +2,7 @@ package com.example.lukyanovpavel.ui.posts
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
@@ -122,4 +123,11 @@ fun LayoutPostBinding.bind(
             postDescription.text = post.description
         }
     }
+}
+
+fun View.disableClickTemporarily() {
+    isClickable = false
+    postDelayed({
+        isClickable = true
+    }, 1500)
 }

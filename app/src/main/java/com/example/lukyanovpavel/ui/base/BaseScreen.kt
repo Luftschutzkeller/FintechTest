@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import com.example.lukyanovpavel.R
 import com.example.lukyanovpavel.databinding.ScreenPostBinding
 import com.example.lukyanovpavel.domain.common.ResourceState
 import com.example.lukyanovpavel.ui.posts.bind
+import com.example.lukyanovpavel.ui.posts.disableClickTemporarily
 import com.example.lukyanovpavel.utils.error.NoInternetConnection
 import com.jakewharton.rxbinding4.view.clicks
 import io.reactivex.Observable
@@ -47,10 +49,16 @@ abstract class BaseScreen<T : Any, VM : BaseViewModel<T>>(
     private fun initButtonsControl(vm: VM) {
         with(binding) {
             postLayout.next.clicks()
-                .subscribe { vm.next() }
+                .subscribe {
+                    vm.next()
+                    postLayout.next.disableClickTemporarily()
+                }
 
             postLayout.back.clicks()
-                .subscribe { vm.previous() }
+                .subscribe {
+                    vm.previous()
+                    postLayout.back.disableClickTemporarily()
+                }
         }
     }
 
