@@ -46,7 +46,7 @@ open class BaseViewModel<T : Any> : ViewModel() {
                     emitter.onNext(ResourceState.Error(error))
                     Timber.e(error)
                 }
-                .doOnComplete { emitter.onNext(ResourceState.Loading) }
+                .doOnSubscribe { emitter.onNext(ResourceState.Loading) }
                 .subscribe(
                     { success ->
                         emitter.onNext(ResourceState.Success(success))
@@ -61,6 +61,10 @@ open class BaseViewModel<T : Any> : ViewModel() {
 
     open fun isFirstPosition(): Observable<Boolean> =
         isFirstPosition
+
+    open fun next() {}
+
+    open fun previous() {}
 
     protected fun Disposable.untilDestroy() {
         dispose.add(this)

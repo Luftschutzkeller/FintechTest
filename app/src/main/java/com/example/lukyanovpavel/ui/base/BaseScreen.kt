@@ -1,16 +1,30 @@
 package com.example.lukyanovpavel.ui.base
 
+import android.os.Bundle
+import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import com.example.lukyanovpavel.databinding.ScreenPostBinding
 import com.example.lukyanovpavel.domain.common.ResourceState
+import com.example.lukyanovpavel.ui.posts.bind
+import com.example.lukyanovpavel.utils.error.NoInternetConnection
+import com.jakewharton.rxbinding4.view.clicks
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import timber.log.Timber
 
-abstract class BaseScreen<T : Any, VM : BaseViewModel<T>>(
+open class BaseScreen<T : Any, VM : BaseViewModel<T>>(
     resourceId: Int
 ) : Fragment(resourceId) {
+    private var _binding: ScreenPostBinding? = null
+    private val binding get() = _binding!!
     private val dispose = CompositeDisposable()
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        _binding = ScreenPostBinding.bind(view)
+    }
 
     protected fun onSubscribeVewModel(vm: VM) {
         vm.onSubscribeViewModel()
@@ -19,6 +33,7 @@ abstract class BaseScreen<T : Any, VM : BaseViewModel<T>>(
             .untilDestroy()
 
         subscribeFirstPostState(vm.isFirstPosition())
+        initButtonsControl(vm)
     }
 
     private fun onStateReceive(resourceState: ResourceState<T>) {
@@ -29,15 +44,47 @@ abstract class BaseScreen<T : Any, VM : BaseViewModel<T>>(
         }
     }
 
-    open fun handleSuccessState(data: T) {
-        handleLoadingState(false)
+    private fun initButtonsControl(vm: VM) {
+        with(binding) {
+            postLayout.next.clicks()
+                .subscribe { vm.next() }
+
+            postLayout.back.clicks()
+                .subscribe { vm.previous() }
+        }
     }
 
-    open fun handleLoadingState(state: Boolean) {}
+    open fun handleSuccessState(data: T) {
+        handleLoadingState(false)
+        binding.postLayout.bind(data)
+    }
+
+    open fun handleLoadingState(state: Boolean) {
+        with(binding) {
+            with(postLayout) {
+                next.isClickable = !state
+                back.isClickable = !state
+                progressBar.isVisible = state
+                postContainerP.isVisible = !state
+            }
+        }
+    }
 
     open fun handleErrorState(error: Throwable?) {
         handleLoadingState(false)
+        with(binding) {
+            errorLayout.root.visibility = View.VISIBLE
+            errorLayout.bind(error)
+            if (error is NoInternetConnection) {
+                errorLayout.repeat.visibility = View.VISIBLE
+                errorLayout.repeat.clicks()
+                    .subscribe { repeat() }
+            }
+            postLayout.root.visibility = View.GONE
+        }
     }
+
+    open fun repeat() {}
 
     private fun subscribeFirstPostState(state: Observable<Boolean>) {
         state
@@ -46,7 +93,9 @@ abstract class BaseScreen<T : Any, VM : BaseViewModel<T>>(
             .untilDestroy()
     }
 
-    open fun handleFirstPositionState(state: Boolean) {}
+    open fun handleFirstPositionState(state: Boolean) {
+        binding.postLayout.back.isClickable = !state
+    }
 
     private fun Disposable.untilDestroy() {
         dispose.add(this)
@@ -54,6 +103,7 @@ abstract class BaseScreen<T : Any, VM : BaseViewModel<T>>(
 
     override fun onDestroy() {
         dispose.clear()
+        _binding = null
         super.onDestroy()
     }
 }

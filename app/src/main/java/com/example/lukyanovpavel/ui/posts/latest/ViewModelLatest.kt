@@ -29,14 +29,16 @@ class ViewModelLatest @Inject constructor(
             .untilDestroy()
     }
 
-    fun nextPost() {
+    override fun next() {
+        super.next()
         repo.loadNext()
             .doOnError(Timber::e)
             .subscribe()
             .untilDestroy()
     }
 
-    fun previousPost() {
+    override fun previous() {
+        super.previous()
         repo.loadPrevious()
             .doOnError(Timber::e)
             .subscribe()
