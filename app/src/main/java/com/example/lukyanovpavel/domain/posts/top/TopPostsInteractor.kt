@@ -1,52 +1,46 @@
 package com.example.lukyanovpavel.domain.posts.top
 
 import com.example.lukyanovpavel.domain.posts.Post
-import com.example.lukyanovpavel.domain.posts.PostCounter
+import com.example.lukyanovpavel.domain.posts.PostStorage
 import io.reactivex.Completable
 import io.reactivex.Observable
-import io.reactivex.subjects.BehaviorSubject
 import javax.inject.Inject
 
 interface TopPostsInteractor {
     fun observPost(): Observable<Post>
     fun start(): Completable
-    fun loadNext(): Completable
-    fun loadPrevious(): Completable
+    fun loadNext()
+    fun loadPrevious()
     fun isFirstPosition(): Observable<Boolean>
 }
 
 class TopPostsInteractorImpl @Inject constructor(
     private val repo: TopPostsRepository
 ) : TopPostsInteractor {
-    private val postStorage = BehaviorSubject.create<Post>()
-    private val counter = PostCounter
+    private val counter = PostStorage()
 
-    override fun observPost(): Observable<Post> = postStorage
+    override fun observPost(): Observable<Post> = counter.observ()
 
     override fun start(): Completable =
         updateData()
 
-    override fun loadNext(): Completable =
+    override fun loadNext() {
         counter.countPlus()
-            .andThen(updateData())
+    }
 
-    override fun loadPrevious(): Completable =
+    override fun loadPrevious() {
         counter.countMinus()
-            .andThen(updateData())
+    }
 
     override fun isFirstPosition(): Observable<Boolean> = counter.isFirstPosition()
 
     private fun updateData(): Completable =
-        with(counter) {
-            repo.getPost(getNowPage(), getCount())
-                .flatMapCompletable { post ->
-                    updatePostStorage(post)
-                }
-                .doOnError(postStorage::onError)
-        }
-
-    private fun updatePostStorage(post: Post): Completable =
-        Completable.fromAction {
-            postStorage.onNext(post)
-        }
+        counter.postCoordinate()
+            .flatMapCompletable { coordinate ->
+                repo.getPost(coordinate.first, coordinate.second)
+                    .flatMapCompletable { post ->
+                        counter.update(post)
+                    }
+                    .doOnError(counter::error)
+            }
 }
