@@ -15,15 +15,9 @@ class ScreenLatest : BaseScreen<Post, ViewModelLatest>(R.layout.screen_post) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         onSubscribeVewModel(vm)
-        vm.start()
     }
 
     override fun repeat() {
-        vm.start()
-    }
-
-    override fun onDestroy() {
-        vm.onDestroy()
-        super.onDestroy()
+        vm.repeat()
     }
 }
