@@ -2,6 +2,7 @@ package com.example.lukyanovpavel.data.api.dto
 
 import android.os.Parcelable
 import com.example.lukyanovpavel.data.database.entity.PostEntity
+import com.example.lukyanovpavel.domain.posts.Post
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 
@@ -44,4 +45,10 @@ fun PostDto.toEntity(
         category = category,
         description = description,
         gifURL = gifURL
+    )
+
+fun PostDto.toDomain(): Post =
+    Post(
+        description,
+        gifURL,
     )
