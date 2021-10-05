@@ -6,6 +6,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.example.lukyanovpavel.databinding.ScreenPostBinding
 import com.example.lukyanovpavel.domain.common.ResourceState
+import com.example.lukyanovpavel.domain.posts.Post
 import com.example.lukyanovpavel.ui.posts.bind
 import com.example.lukyanovpavel.utils.error.NoInternetConnection
 
@@ -29,7 +30,7 @@ abstract class BaseScreen<T : Any, VM : BaseViewModel<T>>(
     private fun onStateReceive(resourceState: ResourceState<T>) {
         when (resourceState) {
             is ResourceState.Success -> handleSuccessState(resourceState.data)
-            is ResourceState.Error -> handleErrorState(resourceState.error)
+            is ResourceState.Error -> handleErrorState(resourceState.error, true)
             is ResourceState.Loading -> handleLoadingState(true)
         }
     }
@@ -44,7 +45,10 @@ abstract class BaseScreen<T : Any, VM : BaseViewModel<T>>(
 
     private fun handleSuccessState(data: T) {
         handleLoadingState(false)
-        binding.postLayout.bind(data)
+        handleErrorState(state = false)
+        when (data) {
+            is Post -> binding.postLayout.bind(data)
+        }
     }
 
     private fun handleLoadingState(state: Boolean) {
@@ -54,16 +58,16 @@ abstract class BaseScreen<T : Any, VM : BaseViewModel<T>>(
         }
     }
 
-    private fun handleErrorState(error: Throwable?) {
+    private fun handleErrorState(error: Throwable? = null, state: Boolean) {
         handleLoadingState(false)
         with(binding) {
-            errorLayout.root.visibility = View.VISIBLE
+            errorLayout.root.isVisible = state
             errorLayout.bind(error)
             if (error is NoInternetConnection) {
-                errorLayout.repeat.visibility = View.VISIBLE
+                errorLayout.repeat.isVisible = state
                 errorLayout.repeat.setOnClickListener { repeat() }
             }
-            postLayout.root.visibility = View.GONE
+            postLayout.root.isVisible = !state
         }
     }
 

@@ -50,5 +50,5 @@ fun PostDto.toEntity(
 fun PostDto.toDomain(): Post =
     Post(
         description,
-        gifURL,
+        gifURL
     )

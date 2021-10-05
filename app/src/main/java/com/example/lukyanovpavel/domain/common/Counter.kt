@@ -1,35 +1,21 @@
-package com.example.lukyanovpavel.domain.posts
+package com.example.lukyanovpavel.domain.common
 
-import com.example.lukyanovpavel.domain.common.ObjectStorage
-import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 
-class PostStorage : ObjectStorage<Post> {
+class Counter {
     private var count = 0
     private var page = 0
     private val isFirst = BehaviorSubject.create<Boolean>()
     private val coordinate = BehaviorSubject.create<Pair<Int, Int>>()
-    private val post = BehaviorSubject.create<Post>()
 
     init {
         coordinate.onNext(page to count)
     }
 
-    override fun observ(): Observable<Post> = post
+    fun nextPost() = plus()
 
-    override fun update(newObj: Post): Completable =
-        Completable.fromAction {
-            post.onNext(newObj)
-        }
-
-    override fun error(error: Throwable) {
-        post.onError(error)
-    }
-
-    fun countPlus(): Unit = plus()
-
-    fun countMinus(): Unit = minus()
+    fun previousPost() = minus()
 
     fun postCoordinate(): Observable<Pair<Int, Int>> = coordinate
 

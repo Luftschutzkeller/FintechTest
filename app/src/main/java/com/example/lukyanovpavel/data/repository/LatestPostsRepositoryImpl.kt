@@ -1,11 +1,12 @@
 package com.example.lukyanovpavel.data.repository
 
+import com.example.lukyanovpavel.data.api.dto.PostDto
+import com.example.lukyanovpavel.data.api.dto.toDomain
 import com.example.lukyanovpavel.data.api.repository.LatestPostsApiRepository
 import com.example.lukyanovpavel.data.database.entity.toDomain
 import com.example.lukyanovpavel.data.database.repository.PostsDatabaseRepository
 import com.example.lukyanovpavel.domain.posts.Post
 import com.example.lukyanovpavel.domain.posts.latest.LatestPostsRepository
-import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
@@ -16,10 +17,12 @@ class LatestPostsRepositoryImpl @Inject constructor(
     private val db: PostsDatabaseRepository
 ) : LatestPostsRepository {
 
-    private fun load(page: Int): Completable =
+    private fun load(page: Int, count: Int): Single<PostDto> =
         latestApi.invoke(page)
-            .flatMapCompletable { posts ->
+            .map { posts ->
                 db.insertPost(LATEST, posts, page)
+                    .subscribe()
+                posts[count]
             }
             .doOnError(Timber::e)
             .subscribeOn(Schedulers.io())
@@ -28,11 +31,8 @@ class LatestPostsRepositoryImpl @Inject constructor(
         db.getPost(LATEST, page, count)
             .flatMap { listPostsEntity ->
                 if (listPostsEntity.isEmpty()) {
-                    load(page)
-                        .andThen(
-                            db.getPost(LATEST, page, count)
-                                .flatMap { Single.just(it.first().toDomain()) }
-                        )
+                    load(page, count)
+                        .map { it.toDomain() }
                 } else {
                     Single.just(listPostsEntity.first().toDomain())
                 }
