@@ -1,14 +1,12 @@
 package com.example.lukyanovpavel.domain.posts.latest
 
+import com.example.lukyanovpavel.domain.common.Counter
 import com.example.lukyanovpavel.domain.posts.Post
-import com.example.lukyanovpavel.domain.posts.PostStorage
-import io.reactivex.Completable
 import io.reactivex.Observable
 import javax.inject.Inject
 
 interface LatestPostsInteractor {
     fun observPost(): Observable<Post>
-    fun start(): Completable
     fun loadNext()
     fun loadPrevious()
     fun isFirstPosition(): Observable<Boolean>
@@ -17,30 +15,23 @@ interface LatestPostsInteractor {
 class LatestPostsInteractorImpl @Inject constructor(
     private val repo: LatestPostsRepository
 ) : LatestPostsInteractor {
-    private val counter = PostStorage()
+    private val counter = Counter()
 
-    override fun observPost(): Observable<Post> = counter.observ()
-
-    override fun start(): Completable =
-        updateData()
+    override fun observPost(): Observable<Post> = updateData()
 
     override fun loadNext() {
-        counter.countPlus()
+        counter.nextPost()
     }
 
     override fun loadPrevious() {
-        counter.countMinus()
+        counter.previousPost()
     }
 
     override fun isFirstPosition(): Observable<Boolean> = counter.isFirstPosition()
 
-    private fun updateData(): Completable =
+    private fun updateData(): Observable<Post> =
         counter.postCoordinate()
-            .flatMapCompletable { coordinate ->
+            .flatMapSingle { coordinate ->
                 repo.getPost(coordinate.first, coordinate.second)
-                    .flatMapCompletable { post ->
-                        counter.update(post)
-                    }
-                    .doOnError(counter::error)
             }
 }

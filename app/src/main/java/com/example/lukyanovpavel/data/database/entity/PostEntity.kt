@@ -17,5 +17,5 @@ class PostEntity(
 fun PostEntity.toDomain(): Post =
     Post(
         description,
-        gifURL,
+        gifURL
     )

@@ -10,12 +10,8 @@ import javax.inject.Inject
 class ViewModelHot @Inject constructor(
     private val repo: HotPostsInteractor
 ) : BaseViewModel<Post>() {
-
     init {
         onSetResource { repo.observPost() }
-            .andThen(repo.start())
-            .subscribe()
-            .untilDestroy()
 
         onSetFirstPosition { repo.isFirstPosition() }
     }
@@ -29,8 +25,6 @@ class ViewModelHot @Inject constructor(
     }
 
     override fun repeat() {
-        repo.start()
-            .subscribe()
-            .untilDestroy()
+        onSetResource { repo.observPost() }
     }
 }
