@@ -73,9 +73,6 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxjava:$rx_version"
     implementation "io.reactivex.rxjava2:rxandroid:$rx_android_version"
 
-    // RxBinding
-    implementation 'com.jakewharton.rxbinding4:rxbinding:4.0.0'
-
     // Kotlin Serialization
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-core:$serial_json_version"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$serial_json_version"

@@ -124,10 +124,3 @@ fun LayoutPostBinding.bind(
         }
     }
 }
-
-fun View.disableClickTemporarily() {
-    isClickable = false
-    postDelayed({
-        isClickable = true
-    }, 1500)
-}
